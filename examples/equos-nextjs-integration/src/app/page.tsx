@@ -1,103 +1,223 @@
-import Image from "next/image";
+"use client";
+
+import { Separator } from "@/components/ui/separator";
+import { Textarea } from "@/components/ui/textarea";
+import { Plus } from "lucide-react";
+import { useState } from "react";
+import { FileWithPath, useDropzone } from "react-dropzone";
+import { toast } from "sonner";
+import { LiveKitRoom, VideoConference } from "@livekit/components-react";
+import { CreateEquosSessionResponseData } from "@equos/node-sdk/dist/types/session.type";
+import { createSessionAction, stopSessionAction } from "./actions/action";
+import { Button } from "@/components/ui/button";
+import { EquosError } from "@equos/node-sdk";
+import "@livekit/components-styles";
 
 export default function Home() {
-  return (
-    <div className="font-sans grid grid-rows-[20px_1fr_20px] items-center justify-items-center min-h-screen p-8 pb-20 gap-16 sm:p-20">
-      <main className="flex flex-col gap-[32px] row-start-2 items-center sm:items-start">
-        <Image
-          className="dark:invert"
-          src="/next.svg"
-          alt="Next.js logo"
-          width={180}
-          height={38}
-          priority
-        />
-        <ol className="font-mono list-inside list-decimal text-sm/6 text-center sm:text-left">
-          <li className="mb-2 tracking-[-.01em]">
-            Get started by editing{" "}
-            <code className="bg-black/[.05] dark:bg-white/[.06] font-mono font-semibold px-1 py-0.5 rounded">
-              src/app/page.tsx
-            </code>
-            .
-          </li>
-          <li className="tracking-[-.01em]">
-            Save and see your changes instantly.
-          </li>
-        </ol>
+  const [refImg, setRefImg] = useState<string | null>(null);
+  const [loading, setLoading] = useState<boolean>(false);
+  const [instructions, setInstructions] =
+    useState<string>(`You are a friendly, enthusiastic Korean language teacher. Your role is to help the student practice Korean through natural, real-life conversations. Adapt to the student’s level:
 
-        <div className="flex gap-4 items-center flex-col sm:flex-row">
-          <a
-            className="rounded-full border border-solid border-transparent transition-colors flex items-center justify-center bg-foreground text-background gap-2 hover:bg-[#383838] dark:hover:bg-[#ccc] font-medium text-sm sm:text-base h-10 sm:h-12 px-4 sm:px-5 sm:w-auto"
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
+If the student is a beginner, speak slowly, clearly, and use simple Korean phrases with English support when needed. Explain vocabulary and grammar in a natural, encouraging way.
+
+If the student is intermediate or advanced, use more Korean, correct mistakes gently, and introduce new vocabulary, cultural nuances, and natural expressions.
+
+Your teaching style:
+
+Conversational: Prioritize dialogue over lectures. Use real-life topics like greetings, ordering food, shopping, hobbies, or traveling in Korea.
+
+Interactive: Ask the student questions, encourage them to answer, and give feedback.
+
+Supportive: Be patient, cheerful, and motivating. Praise progress and gently correct errors.
+
+Cultural: Occasionally add small cultural insights (e.g., polite vs casual speech, common expressions, gestures, or traditions).
+
+Adaptive: If the student struggles, simplify your language. If they are comfortable, gradually increase difficulty.
+
+Tone:
+
+Warm, energetic, encouraging — like a tutor who makes learning fun and confidence-building.
+
+Mix Korean and English depending on the student’s ability.
+
+Goal:
+Help the student build confidence in speaking Korean through engaging, realistic conversations, while steadily improving their vocabulary, pronunciation, grammar, and cultural understanding.
+    `);
+
+  const [session, setSession] = useState<CreateEquosSessionResponseData | null>(
+    null
+  );
+
+  const onDropFile = async (acceptedFiles: FileWithPath[]) => {
+    const file = acceptedFiles[0];
+    if (!file) {
+      toast.error("File is too large.");
+      return;
+    }
+
+    console.log(URL.createObjectURL(file));
+    console.log("File dropped:", file);
+
+    const reader = new FileReader();
+
+    reader.onloadend = () => {
+      const dataUrl = reader.result as string;
+      setRefImg(dataUrl);
+    };
+
+    reader.readAsDataURL(file);
+  };
+
+  const onChangeInstructions = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
+    setInstructions(e.target.value);
+  };
+
+  const fileDropzone = useDropzone({
+    onDrop: onDropFile,
+    accept: {
+      "image/png": [".png"],
+      "image/jpeg": [".jpeg", ".jpg"],
+    },
+    maxFiles: 1,
+    maxSize: 10 * 1024 * 1024, // 10 MB
+  });
+
+  const onStartSession = async () => {
+    if (!refImg || !instructions) {
+      toast.error("Please select a reference image and define instructions.");
+      return;
+    }
+
+    if (loading) {
+      return;
+    }
+
+    if (session) {
+      toast.error("Please end the current session before starting a new one.");
+      return;
+    }
+
+    setLoading(true);
+
+    const sessionData = await createSessionAction(refImg, instructions).catch(
+      (error: EquosError) => {
+        toast.error(`Error: ${error.message}`);
+
+        return null;
+      }
+    );
+    setSession(sessionData);
+    setLoading(false);
+  };
+
+  const onStopSession = async () => {
+    if (!session) {
+      toast.error("No active session to stop.");
+      return;
+    }
+
+    setLoading(true);
+
+    try {
+      await stopSessionAction(session.session.id);
+      setSession(null);
+      toast.success("Session stopped successfully.");
+    } catch (error) {
+      toast.error("Failed to stop session. Please try again.");
+    }
+
+    setLoading(false);
+  };
+
+  return (
+    <div className="flex items-center gap-4">
+      <div className="flex flex-col flex-1 bg-muted rounded-lg p-4 min-h-[90vh]">
+        <h1 className="text-2xl font-bold">Session Playground</h1>
+        <span className="text-sm text-muted-foreground">
+          This playground showases how can simply integrate equos avatars in
+          their nextjs applications.
+        </span>
+
+        <Separator className="my-8" />
+
+        {(!refImg || !instructions) && (
+          <div>
+            <h2 className="font-bold">Get started with integration:</h2>
+            <ol className="list-decimal ml-4 pl-4 space-y-2 mt-4">
+              <li>
+                Copy <code className="text-blue-500">.env.template</code> into a
+                new <code className="text-blue-500">.env</code> file (in the
+                same directory).
+              </li>
+              <li>
+                Add your <code className="text-blue-500">EQUOS_API_KEY</code> to
+                the <code className="text-blue-500">.env</code> file.
+              </li>
+
+              <li>Select avatar reference image in the right panel.</li>
+              <li>Define avatar persona in the right panel.</li>
+              <li>Click start session.</li>
+            </ol>
+          </div>
+        )}
+
+        {!!refImg && !!instructions && !session && (
+          <div>
+            <Button onClick={onStartSession}>Start Session</Button>
+          </div>
+        )}
+
+        {session && (
+          <div>
+            <LiveKitRoom
+              serverUrl={session.session.host.serverUrl}
+              token={session.consumerAccessToken}
+              audio={true}
+              video={true}
+              onDisconnected={onStopSession}
+              data-lk-theme="default"
+              className="lk-room-container"
+            >
+              <VideoConference></VideoConference>
+            </LiveKitRoom>
+          </div>
+        )}
+      </div>
+      <div className="flex flex-col w-64 rounded-lg p-4 min-h-[90vh] space-y-8">
+        <div className="flex flex-col gap-4">
+          <span className="text-sm font-bold">Reference Image</span>
+          <div
+            {...fileDropzone.getRootProps()}
+            className={`h-56 w-full cursor-pointer rounded-md border border-dashed transition-colors hover:ring-primary`}
           >
-            <Image
-              className="dark:invert"
-              src="/vercel.svg"
-              alt="Vercel logomark"
-              width={20}
-              height={20}
-            />
-            Deploy now
-          </a>
-          <a
-            className="rounded-full border border-solid border-black/[.08] dark:border-white/[.145] transition-colors flex items-center justify-center hover:bg-[#f2f2f2] dark:hover:bg-[#1a1a1a] hover:border-transparent font-medium text-sm sm:text-base h-10 sm:h-12 px-4 sm:px-5 w-full sm:w-auto md:w-[158px]"
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Read our docs
-          </a>
+            {!!refImg && (
+              <img
+                src={refImg}
+                alt="Test Ref Image"
+                className="rounded-md object-contain"
+              />
+            )}
+            {!refImg && (
+              <div className="size-full rounded-md flex items-center justify-center">
+                <Plus />
+              </div>
+            )}
+            <input {...fileDropzone.getInputProps()} />
+          </div>
         </div>
-      </main>
-      <footer className="row-start-3 flex gap-[24px] flex-wrap items-center justify-center">
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/file.svg"
-            alt="File icon"
-            width={16}
-            height={16}
+
+        <div className="flex flex-col gap-4">
+          <span className="text-sm font-bold">Agent Personna</span>
+          <Textarea
+            placeholder="Enter instructions to define the agent behaviour."
+            rows={16}
+            className="min-h-56 max-h-[60vh]"
+            onChange={onChangeInstructions}
+            value={instructions}
           />
-          Learn
-        </a>
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/window.svg"
-            alt="Window icon"
-            width={16}
-            height={16}
-          />
-          Examples
-        </a>
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://nextjs.org?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/globe.svg"
-            alt="Globe icon"
-            width={16}
-            height={16}
-          />
-          Go to nextjs.org →
-        </a>
-      </footer>
+        </div>
+      </div>
     </div>
   );
 }
