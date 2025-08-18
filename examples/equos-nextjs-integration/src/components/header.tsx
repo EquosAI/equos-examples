@@ -5,12 +5,7 @@ import {
   DropdownMenuGroup,
   DropdownMenuItem,
   DropdownMenuLabel,
-  DropdownMenuPortal,
   DropdownMenuSeparator,
-  DropdownMenuShortcut,
-  DropdownMenuSub,
-  DropdownMenuSubContent,
-  DropdownMenuSubTrigger,
   DropdownMenuTrigger,
 } from "./ui/dropdown-menu";
 import { Button } from "./ui/button";
@@ -27,9 +22,9 @@ export function Header() {
           width={40}
           alt="Equos Logo"
         />
-        <span className="font-bold text-xl">
+        <Link className="font-bold text-xl" href="/">
           Equos <sub className="text-xs text-[#ffae00]">NextJs</sub>
-        </span>
+        </Link>
       </div>
 
       <div className="flex items-center gap-2">
@@ -42,21 +37,10 @@ export function Header() {
           <DropdownMenuContent className="w-56" align="start">
             <DropdownMenuLabel>Examples</DropdownMenuLabel>
             <DropdownMenuGroup>
-              <DropdownMenuItem>
-                Profile
-                <DropdownMenuShortcut>⇧⌘P</DropdownMenuShortcut>
-              </DropdownMenuItem>
-              <DropdownMenuItem>
-                Billing
-                <DropdownMenuShortcut>⌘B</DropdownMenuShortcut>
-              </DropdownMenuItem>
-              <DropdownMenuItem>
-                Settings
-                <DropdownMenuShortcut>⌘S</DropdownMenuShortcut>
-              </DropdownMenuItem>
-              <DropdownMenuItem>
-                Keyboard shortcuts
-                <DropdownMenuShortcut>⌘K</DropdownMenuShortcut>
+              <DropdownMenuItem asChild>
+                <Link href="/avatar-and-agent">
+                  Avatar + Agent Conference (Livekit)
+                </Link>
               </DropdownMenuItem>
             </DropdownMenuGroup>
             <DropdownMenuSeparator />
@@ -74,13 +58,16 @@ export function Header() {
               </DropdownMenuItem>
             </DropdownMenuGroup>
             <DropdownMenuSeparator />
-            <DropdownMenuItem>GitHub</DropdownMenuItem>
+            <DropdownMenuItem asChild>
+              <Link href="https://github.com/EquosAI" target="_blank">
+                GitHub
+              </Link>
+            </DropdownMenuItem>
             <DropdownMenuItem>Support</DropdownMenuItem>
-            <DropdownMenuItem disabled>API</DropdownMenuItem>
-            <DropdownMenuSeparator />
-            <DropdownMenuItem>
-              Log out
-              <DropdownMenuShortcut>⇧⌘Q</DropdownMenuShortcut>
+            <DropdownMenuItem asChild>
+              <Link href="https://api.equos.ai/docs/v1" target="_blank">
+                GitHub
+              </Link>
             </DropdownMenuItem>
           </DropdownMenuContent>
         </DropdownMenu>
