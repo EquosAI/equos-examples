@@ -5,7 +5,7 @@ This is a nextjs equos integration example app.
 
 ### Clone & Install
 ```bash
-git clone https://github.com/LipittSAS/equos-examples.git
+git clone https://github.com/EquosAI/equos-examples.git
 
 cd equos-examples/equos-nextjs-integration
 
