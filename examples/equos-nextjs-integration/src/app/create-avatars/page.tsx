@@ -55,6 +55,7 @@ export default function Page() {
 
       const res = await createAvatarAction({
         name,
+        client: "example-client",
         refImage: refImage,
         identity: resolvedIdentity,
       }).catch((e) => {

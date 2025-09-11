@@ -148,6 +148,7 @@ export default function Page() {
       setIsCreating(true);
       const res = await createAgentAction({
         instructions,
+        client: "example-client",
         provider,
         config,
       }).catch(() => null);
