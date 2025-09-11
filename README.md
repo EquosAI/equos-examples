@@ -1,6 +1,21 @@
 # Equos Examples
 
-- Nextjs Integration [here](./examples/equos-nextjs-integration/README.md)
+## Getting Started
+Go see our [documentation](https://docs.equos.ai).
+
+### API
+- Reference: [https://api.equos.ai/docs/v1](https://api.equos.ai/docs/v1)
+
+### SDKs
+- NodeJS: [https://www.npmjs.com/package/@equos/node-sdk](https://www.npmjs.com/package/@equos/node-sdk)
+
+### Join the Community
+[Join Equos.ai Community on Slack](https://join.slack.com/t/equosaicommunity/shared_invite/zt-3d8oy19au-jZpsJB0i~gdL0jbDswdzzQ)
+
+
+## Examples
+-  [Nextjs](./examples/equos-nextjs-integration/README.md)
+
 
 ## Authors
 - [Loïc Combis](https://www.linkedin.com/in/lo%C3%AFc-combis-a211a813a/)
