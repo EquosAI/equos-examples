@@ -24,10 +24,20 @@ export default function Home() {
   const examples: Example[] = useMemo(
     () => [
       {
-        name: "Avatar + Agent (Livekit)",
+        name: "Create Avatars",
+        description: "Create visual avatars using Equos.ai Node SDK.",
+        link: "/create-avatars",
+      },
+      {
+        name: "Create Voice Agents",
+        description: "Create voice agents using Equos.ai Node SDK.",
+        link: "/create-agents",
+      },
+      {
+        name: "All-In-One Avatar Sessions",
         description:
-          "Start sessions with visual avatar and configurable agent hosted by equos using livekit.",
-        link: "/avatar-and-agent",
+          "Run sessions where equos.ai runs both the visual avatar and the voice agent.",
+        link: "/all-in-one",
       },
     ],
     []

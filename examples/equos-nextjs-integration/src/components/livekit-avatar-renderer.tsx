@@ -7,7 +7,9 @@ import {
 import { Track } from "livekit-client";
 
 export function LiveKitAvatarRenderer() {
-  const tracks = useTracks([{ source: Track.Source.Camera }]);
+  const tracks = useTracks([
+    { source: Track.Source.Camera, withPlaceholder: false },
+  ]);
 
   return (
     <div className="max-w-md">
