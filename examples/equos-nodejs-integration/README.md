@@ -30,7 +30,7 @@ npm -v # Should print "10.9.3".
 ```bash
 git clone https://github.com/EquosAI/equos-examples.git
 
-cd equos-examples/equos-nodejs-integration
+cd equos-examples/examples/equos-nodejs-integration
 
 # This assumes you installed nodejs with the snippet above.
 nvm use 

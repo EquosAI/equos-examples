@@ -38,7 +38,7 @@ pipx install poetry
 ```bash
 git clone https://github.com/EquosAI/equos-examples.git
 
-cd equos-examples/equos-python-integration
+cd equos-examples/examples/equos-python-integration
 
 poetry install
 ```
