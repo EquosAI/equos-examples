@@ -14,7 +14,8 @@ Go see our [documentation](https://docs.equos.ai).
 
 
 ## Examples
--  [Nextjs](./examples/equos-nextjs-integration/README.md)
+- [Nextjs](./examples/equos-nextjs-integration/README.md)
+- [NodeJS](./examples//equos-nodejs-integration/README.md)
 
 
 ## Authors
