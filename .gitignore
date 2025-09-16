@@ -1,5 +1,12 @@
 .env
 
+# Dependency directories
 node_modules
+.venv
 
+# Node build output
 dist
+
+# OS X files
+.DS_Store
+

@@ -134,18 +134,33 @@ files = [
 ]
 
 [[package]]
+name = "dotenv"
+version = "0.9.9"
+description = "Deprecated package"
+optional = false
+python-versions = "*"
+groups = ["main"]
+files = [
+    {file = "dotenv-0.9.9-py2.py3-none-any.whl", hash = "sha256:29cf74a087b31dafdb5a446b6d7e11cbce8ed2741540e2339c69fbef92c94ce9"},
+]
+
+[package.dependencies]
+python-dotenv = "*"
+
+[[package]]
 name = "equos"
-version = "0.1.0"
+version = "1.0.0"
 description = "Equos.ai official Python SDK."
 optional = false
 python-versions = ">=3.11"
 groups = ["main"]
 files = [
-    {file = "equos-0.1.0-py3-none-any.whl", hash = "sha256:2ca9dfd1c4ada5c2dc7a1e4bf366a4325f2fd6bd3b7308f2aa00d23b43a4bdbb"},
-    {file = "equos-0.1.0.tar.gz", hash = "sha256:9e08afc037af302267d7ef5738d9d4f5b0bb63c3cd384c37cf481d91d6020bc4"},
+    {file = "equos-1.0.0-py3-none-any.whl", hash = "sha256:98fbdd45bbcfd36f0be93f66a7d42022c7fe83cc0234f2ce758243ac3423cbf7"},
+    {file = "equos-1.0.0.tar.gz", hash = "sha256:a0cc4f523e16809119dd0e0aa408fddca149a6c095aa01b9eef01ef6c0a20620"},
 ]
 
 [package.dependencies]
+dotenv = ">=0.9.9,<0.10.0"
 httpx = ">=0.28.1,<0.29.0"
 pydantic = ">=2.11.9,<3.0.0"
 requests = ">=2.32.5,<3.0.0"
@@ -359,6 +374,21 @@ files = [
 typing-extensions = ">=4.6.0,<4.7.0 || >4.7.0"
 
 [[package]]
+name = "python-dotenv"
+version = "1.1.1"
+description = "Read key-value pairs from a .env file and set them as environment variables"
+optional = false
+python-versions = ">=3.9"
+groups = ["main"]
+files = [
+    {file = "python_dotenv-1.1.1-py3-none-any.whl", hash = "sha256:31f23644fe2602f88ff55e1f5c79ba497e01224ee7737937930c448e4d0e24dc"},
+    {file = "python_dotenv-1.1.1.tar.gz", hash = "sha256:a8a6399716257f45be6a007360200409fce5cda2661e3dec71d23dc15f6189ab"},
+]
+
+[package.extras]
+cli = ["click (>=5.0)"]
+
+[[package]]
 name = "requests"
 version = "2.32.5"
 description = "Python HTTP for Humans."
@@ -440,4 +470,4 @@ zstd = ["zstandard (>=0.18.0)"]
 [metadata]
 lock-version = "2.1"
 python-versions = ">=3.11"
-content-hash = "c66c9a6529421c2f584199c9ce7a7385926294a4ca34bd46c76d04c38a37d393"
+content-hash = "9a24965c0ef9aab914fa2865a9177a7d78b50e1565924152c98de40f7092e4e9"

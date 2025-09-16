@@ -21,5 +21,15 @@
   "[xml]": {
     "editor.defaultFormatter": "fabianlauer.vs-code-xml-format"
   },
-  "WillLuke.nextjs.hasPrompted": true
+  "[python]": {
+        "editor.defaultFormatter": "charliermarsh.ruff",
+        "editor.formatOnSave": true
+    },
+    "[toml]": {
+        "editor.defaultFormatter": "be5invis.toml",
+        "editor.formatOnSave": true
+    },
+  "WillLuke.nextjs.hasPrompted": true,
+  "python.defaultInterpreterPath": "${workspaceFolder}/examples/equos-python-integration/.venv/bin/python"
+
 }

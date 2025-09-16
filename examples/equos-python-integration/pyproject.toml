@@ -1,5 +1,5 @@
 [project]
-name = "python-integration"
+name = "equos-python-integration"
 version = "0.1.0"
 description = ""
 authors = [
@@ -8,11 +8,9 @@ authors = [
 readme = "README.md"
 requires-python = ">=3.11"
 dependencies = [
-    "equos (>=0.1.0,<0.2.0)"
+    "dotenv (>=0.9.9,<0.10.0)",
+    "equos (>=1.0.0,<2.0.0)",
 ]
-
-[tool.poetry]
-packages = [{include = "python_integration", from = "src"}]
 
 
 [build-system]
