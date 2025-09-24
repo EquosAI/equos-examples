@@ -21,8 +21,8 @@ import {
   AgentProvider,
   EquosAgent,
   GeminiAgentConfig,
-  GoogleRealtimeModels,
-  GoogleRealtimeVoices,
+  GeminiRealtimeModels,
+  GeminiRealtimeVoices,
   OpenaiAgentConfig,
   OpenaiRealtimeModels,
   OpenaiRealtimeVoices,
@@ -48,11 +48,11 @@ export default function Page() {
 
   const modelsMap: Record<
     AgentProvider,
-    OpenaiRealtimeModels[] | GoogleRealtimeModels[]
+    OpenaiRealtimeModels[] | GeminiRealtimeModels[]
   > = useMemo(
     () => ({
       [AgentProvider.openai]: Object.values(OpenaiRealtimeModels),
-      [AgentProvider.gemini]: Object.values(GoogleRealtimeModels),
+      [AgentProvider.gemini]: Object.values(GeminiRealtimeModels),
       [AgentProvider.elevenlabs]: [],
     }),
     []
@@ -60,11 +60,11 @@ export default function Page() {
 
   const voicesMap: Record<
     AgentProvider,
-    OpenaiRealtimeVoices[] | GoogleRealtimeVoices[]
+    OpenaiRealtimeVoices[] | GeminiRealtimeVoices[]
   > = useMemo(
     () => ({
       [AgentProvider.openai]: Object.values(OpenaiRealtimeVoices),
-      [AgentProvider.gemini]: Object.values(GoogleRealtimeVoices),
+      [AgentProvider.gemini]: Object.values(GeminiRealtimeVoices),
       [AgentProvider.elevenlabs]: [],
     }),
     []
@@ -74,16 +74,18 @@ export default function Page() {
 
   const schema = z
     .object({
-      instructions: z.string().min(3).max(10000),
       provider: z.enum(AgentProvider),
+      name: z.string().min(3).max(100).optional(),
       config: z.union([
         z.object({
+          instructions: z.string().min(3).max(10000),
           model: z.enum(OpenaiRealtimeModels),
           voice: z.enum(OpenaiRealtimeVoices),
         }),
         z.object({
-          model: z.enum(GoogleRealtimeModels),
-          voice: z.enum(GoogleRealtimeVoices),
+          instructions: z.string().min(3).max(10000),
+          model: z.enum(GeminiRealtimeModels),
+          voice: z.enum(GeminiRealtimeVoices),
         }),
       ]),
     })
@@ -100,11 +102,11 @@ export default function Page() {
           );
         } else if (data.provider === AgentProvider.gemini) {
           return (
-            Object.values(GoogleRealtimeModels).includes(
-              data.config.model as GoogleRealtimeModels
+            Object.values(GeminiRealtimeModels).includes(
+              data.config.model as GeminiRealtimeModels
             ) &&
-            Object.values(GoogleRealtimeVoices).includes(
-              data.config.voice as GoogleRealtimeVoices
+            Object.values(GeminiRealtimeVoices).includes(
+              data.config.voice as GeminiRealtimeVoices
             )
           );
         }
@@ -117,9 +119,10 @@ export default function Page() {
   const form = useForm<z.infer<typeof schema>>({
     resolver: zodResolver(schema),
     defaultValues: {
-      instructions: "",
+      name: "My Agent",
       provider: provider,
       config: {
+        instructions: "",
         model: modelsMap[provider][0],
         voice: voicesMap[provider][0],
       } as OpenaiAgentConfig | GeminiAgentConfig,
@@ -133,22 +136,22 @@ export default function Page() {
     setTimeout(() => {
       form.setValue(
         "config.model",
-        modelsMap[value][0] as OpenaiRealtimeModels | GoogleRealtimeModels
+        modelsMap[value][0] as OpenaiRealtimeModels | GeminiRealtimeModels
       );
       form.setValue(
         "config.voice",
-        voicesMap[value][0] as OpenaiRealtimeVoices | GoogleRealtimeVoices
+        voicesMap[value][0] as OpenaiRealtimeVoices | GeminiRealtimeVoices
       );
     }, 50);
   };
 
   const onSubmit = async (data: z.infer<typeof schema>) => {
     if (!isCreating) {
-      const { instructions, provider, config } = data;
+      const { name, provider, config } = data;
       setIsCreating(true);
       const res = await createAgentAction({
-        instructions,
         client: "example-client",
+        name,
         provider,
         config,
       }).catch(() => null);
@@ -173,13 +176,11 @@ export default function Page() {
         <div className="w-full border rounded-lg p-4 flex items-center gap-2">
           <div className="flex flex-col flex-1">
             <span className="text-md font-bold capitalize">
-              {createdAgent.provider}
+              {createdAgent.name}
             </span>
             <span className="text-md text-muted-foreground">
-              {createdAgent.config.model} | {createdAgent.config.voice}
-            </span>
-            <span className="text-xs text-muted-foreground text-justify w-full h-[400px] overflow-hidden text-ellipis mt-2">
-              {createdAgent.instructions}
+              {createdAgent.provider}
+              <code>{JSON.stringify(createdAgent.config)}</code>
             </span>
 
             <div className="mt-4">
@@ -298,7 +299,7 @@ export default function Page() {
 
             <FormField
               control={form.control}
-              name="instructions"
+              name="config.instructions"
               render={({ field }) => (
                 <div className="grid gap-2">
                   <FormLabel className="font-bold">Instructions</FormLabel>
