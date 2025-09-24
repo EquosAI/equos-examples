@@ -22,11 +22,12 @@ async def create_agent() -> None:
     agent: EquosAgent = await client.async_agents.create(
         data=CreateEquosAgentRequest(
             provider=AgentProvider.gemini,
+            name="English Translator",
             config=GeminiAgentConfig(
+                instructions="You are a helpful assistant that translates English to French.",
                 model=GeminiRealtimeModels.gemini_2_5_flash_exp,
                 voice=GeminiRealtimeVoices.Fenrir,
             ),
-            instructions="You are a helpful assistant that translates English to French.",
             client=None,  # Optional: specify a client ID if needed for resource segmentation.
         )
     )

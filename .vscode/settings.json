@@ -31,5 +31,4 @@
     },
   "WillLuke.nextjs.hasPrompted": true,
   "python.defaultInterpreterPath": "${workspaceFolder}/examples/equos-python-integration/.venv/bin/python"
-
 }
