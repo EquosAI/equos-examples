@@ -96,7 +96,7 @@ async def feed_audio_and_get_video_back() -> None:
         print("Sending audio frame...")
         await sender.capture_frame(
             rtc.AudioFrame(
-                data=bytearray(640 * 2),
+                data=bytearray(640),
                 sample_rate=16000,
                 num_channels=1,
                 samples_per_channel=640,

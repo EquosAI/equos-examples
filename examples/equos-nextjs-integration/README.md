@@ -1,4 +1,4 @@
-# Equos NestJS integration example.
+# Equos NextJS integration example.
 This is a nextjs equos integration example app.
 
 ## Pre Requisistes

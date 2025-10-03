@@ -9,7 +9,7 @@
     "lint": "next lint"
   },
   "dependencies": {
-    "@equos/node-sdk": "^2.0.4",
+    "@equos/node-sdk": "^2.0.7",
     "@hookform/resolvers": "^5.2.1",
     "@livekit/components-react": "^2.9.14",
     "@livekit/components-styles": "^1.1.6",

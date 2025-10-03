@@ -2,10 +2,7 @@ import os
 
 from typing import Optional
 
-from equos import (
-    Equos,
-    EquosSession,
-)
+from equos import Equos, EquosSession, EquosOptions
 
 from dotenv import load_dotenv
 
@@ -13,9 +10,14 @@ load_dotenv()
 
 
 def stop_session() -> None:
-    client = Equos(api_key=os.getenv("EQUOS_API_KEY", ""))
+    client = Equos(
+        api_key=os.getenv("EQUOS_API_KEY", ""),
+        opts=EquosOptions(endpoint="http://localhost:3001"),
+    )
 
     EQUOS_SESSION_ID = os.getenv("EQUOS_SESSION_ID", "")
+
+    print("Stopping session:", EQUOS_SESSION_ID)
 
     session: Optional[EquosSession] = client.sessions.stop(id=EQUOS_SESSION_ID)
 

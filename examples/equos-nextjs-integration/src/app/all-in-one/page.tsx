@@ -22,8 +22,8 @@ import {
 import {
   AgentProvider,
   GeminiAgentConfig,
-  GoogleRealtimeModels,
-  GoogleRealtimeVoices,
+  GeminiRealtimeModels,
+  GeminiRealtimeVoices,
   OpenaiAgentConfig,
   OpenaiRealtimeModels,
   OpenaiRealtimeVoices,
@@ -39,11 +39,11 @@ export default function Page() {
 
   const modelsMap: Record<
     AgentProvider,
-    OpenaiRealtimeModels[] | GoogleRealtimeModels[]
+    OpenaiRealtimeModels[] | GeminiRealtimeModels[]
   > = useMemo(
     () => ({
       [AgentProvider.openai]: Object.values(OpenaiRealtimeModels),
-      [AgentProvider.gemini]: Object.values(GoogleRealtimeModels),
+      [AgentProvider.gemini]: Object.values(GeminiRealtimeModels),
       [AgentProvider.elevenlabs]: [],
     }),
     []
@@ -51,11 +51,11 @@ export default function Page() {
 
   const voicesMap: Record<
     AgentProvider,
-    OpenaiRealtimeVoices[] | GoogleRealtimeVoices[]
+    OpenaiRealtimeVoices[] | GeminiRealtimeVoices[]
   > = useMemo(
     () => ({
       [AgentProvider.openai]: Object.values(OpenaiRealtimeVoices),
-      [AgentProvider.gemini]: Object.values(GoogleRealtimeVoices),
+      [AgentProvider.gemini]: Object.values(GeminiRealtimeVoices),
       [AgentProvider.elevenlabs]: [],
     }),
     []
@@ -64,10 +64,10 @@ export default function Page() {
   const [instructions, setInstructions] = useState(DEFAULT_EQUOS_PROMPT);
   const [provider, setProvider] = useState<AgentProvider>(AgentProvider.openai);
   const [model, setModel] = useState<
-    OpenaiRealtimeModels | GoogleRealtimeModels
+    OpenaiRealtimeModels | GeminiRealtimeModels
   >(modelsMap[provider][0]);
   const [voice, setVoice] = useState<
-    OpenaiRealtimeVoices | GoogleRealtimeVoices
+    OpenaiRealtimeVoices | GeminiRealtimeVoices
   >(voicesMap[provider][0]);
 
   const [creating, setCreating] = useState(false);
@@ -89,9 +89,9 @@ export default function Page() {
           identity: "jeremy",
         },
         agent: {
-          instructions,
           provider,
           config: {
+            instructions,
             model,
             voice,
           } as OpenaiAgentConfig | GeminiAgentConfig,
@@ -135,10 +135,10 @@ export default function Page() {
 
     setTimeout(() => {
       setModel(
-        modelsMap[value][0] as OpenaiRealtimeModels | GoogleRealtimeModels
+        modelsMap[value][0] as OpenaiRealtimeModels | GeminiRealtimeModels
       );
       setVoice(
-        voicesMap[value][0] as OpenaiRealtimeVoices | GoogleRealtimeVoices
+        voicesMap[value][0] as OpenaiRealtimeVoices | GeminiRealtimeVoices
       );
     }, 50);
   };
@@ -207,7 +207,7 @@ export default function Page() {
 
           <Select
             onValueChange={(value) =>
-              setModel(value as GoogleRealtimeModels | OpenaiRealtimeModels)
+              setModel(value as GeminiRealtimeModels | OpenaiRealtimeModels)
             }
             value={model}
           >
@@ -229,7 +229,7 @@ export default function Page() {
 
           <Select
             onValueChange={(value) =>
-              setVoice(value as GoogleRealtimeVoices | OpenaiRealtimeVoices)
+              setVoice(value as GeminiRealtimeVoices | OpenaiRealtimeVoices)
             }
             value={voice}
           >
