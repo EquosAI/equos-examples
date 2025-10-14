@@ -34,10 +34,14 @@ export default function Home() {
         link: "/create-agents",
       },
       {
-        name: "All-In-One Avatar Sessions",
-        description:
-          "Run sessions where equos.ai runs both the visual avatar and the voice agent.",
-        link: "/all-in-one",
+        name: "Custom Avatar Sessions",
+        description: "Run custom sessions with livekit UI components.",
+        link: "/custom-livekit",
+      },
+      {
+        name: "Avatar Sessions",
+        description: "Run sessions with Equos pre-built UI components.",
+        link: "/avatar-sessions",
       },
     ],
     []

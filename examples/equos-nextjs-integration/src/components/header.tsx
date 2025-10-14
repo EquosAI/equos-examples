@@ -46,13 +46,18 @@ export function Header() {
                 <DropdownMenuSubContent>
                   <DropdownMenuGroup>
                     <DropdownMenuItem asChild>
+                      <Link href="/avatar-sessions">Run Sessions</Link>
+                    </DropdownMenuItem>
+                    <DropdownMenuItem asChild>
                       <Link href="/create-avatars">Create Avatars</Link>
                     </DropdownMenuItem>
                     <DropdownMenuItem asChild>
                       <Link href="/create-agents">Create Agents</Link>
                     </DropdownMenuItem>
                     <DropdownMenuItem asChild>
-                      <Link href="/all-in-one">All-in-one Avatar Sessions</Link>
+                      <Link href="/custom-livekit">
+                        Custom Livekit Sessions
+                      </Link>
                     </DropdownMenuItem>
                   </DropdownMenuGroup>
                 </DropdownMenuSubContent>

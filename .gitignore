@@ -10,3 +10,4 @@ dist
 # OS X files
 .DS_Store
 
+env.ts
