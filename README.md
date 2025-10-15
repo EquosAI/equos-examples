@@ -18,7 +18,8 @@ Go see our [documentation](https://docs.equos.ai).
 ## Examples
 - [Nextjs](./examples/equos-nextjs-integration/README.md)
 - [NodeJS](./examples/equos-nodejs-integration/README.md)
-- [React](./examples//equos-react-integration/README.md)
+- [React](./examples/equos-react-integration/README.md)
+- [Vanilla](./examples/equos-vanilla-integration/README.md)
 - [Python](./examples/python-integration/README.md)
 
 

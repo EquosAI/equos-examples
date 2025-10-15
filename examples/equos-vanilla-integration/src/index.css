@@ -1,0 +1,11 @@
+@import '@equos/browser-sdk/styles.css';
+
+.equos-popup {
+    right: 16px;
+    bottom: 16px;
+}
+
+.placeholder-container {
+    width: 512px;
+    height: 512px;
+}
