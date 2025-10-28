@@ -24,9 +24,7 @@ EQUOS_AVATAR_ID = os.getenv("EQUOS_AVATAR_ID", "")
 
 
 async def feed_audio_and_get_video_back() -> None:
-    client = Equos(
-        api_key=os.getenv("EQUOS_API_KEY", ""),
-    )
+    client = Equos(api_key=os.getenv("EQUOS_API_KEY", ""))
 
     response: CreateEquosSessionResponse = await client.async_sessions.create(
         data=CreateEquosSessionRequest(
@@ -96,10 +94,10 @@ async def feed_audio_and_get_video_back() -> None:
         print("Sending audio frame...")
         await sender.capture_frame(
             rtc.AudioFrame(
-                data=bytearray(640),
+                data=bytearray(1280),  # 16000Hz * 40ms * 1 channel * 2 bytes per sample
                 sample_rate=16000,
                 num_channels=1,
-                samples_per_channel=640,
+                samples_per_channel=640,  # 16000Hz * 40ms * 1 channel
             )
         )
         await asyncio.sleep(0.04)
