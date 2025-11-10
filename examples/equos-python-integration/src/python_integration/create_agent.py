@@ -5,7 +5,6 @@ from equos import (
     EquosAgent,
     CreateEquosAgentRequest,
     AgentProvider,
-    GeminiAgentConfig,
     GeminiRealtimeVoices,
     GeminiRealtimeModels,
 )
@@ -22,11 +21,11 @@ def create_agent() -> None:
         data=CreateEquosAgentRequest(
             provider=AgentProvider.gemini,
             name="English Translator",
-            config=GeminiAgentConfig(
-                instructions="You are a helpful assistant that translates English to French.",
-                model=GeminiRealtimeModels.gemini_2_5_flash_exp,
-                voice=GeminiRealtimeVoices.Fenrir,
-            ),
+            model=GeminiRealtimeModels.gemini_2_5_flash_native_audio_09_2025,
+            voice=GeminiRealtimeVoices.Fenrir,
+            instructions="You are a helpful assistant that translates English to French.",
+            search=True,
+            emotions=True,
             client=None,  # Optional: specify a client ID if needed for resource segmentation.
         )
     )
