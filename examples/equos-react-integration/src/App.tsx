@@ -165,7 +165,7 @@ export default function App() {
       <EquosPopup alignX={alignX} alignY={alignY}>
         <EquosBubbleTrigger
           dark={dark}
-          windowSize={windowSize}
+          windowSizeInPixels={windowSize}
           agent={agent.current}
         ></EquosBubbleTrigger>
       </EquosPopup>

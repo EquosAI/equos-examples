@@ -518,14 +518,14 @@ python-dotenv = "*"
 
 [[package]]
 name = "equos"
-version = "1.1.0"
+version = "1.2.3"
 description = "Equos.ai official Python SDK."
 optional = false
 python-versions = ">=3.11"
 groups = ["main"]
 files = [
-    {file = "equos-1.1.0-py3-none-any.whl", hash = "sha256:020df931dfe5226ebe75c7157021da710527445ae96b83989e26d9ab05ede654"},
-    {file = "equos-1.1.0.tar.gz", hash = "sha256:6d9af59ef25639df704429fc02e9fff202df60c4ab6c6d0d81e1815889e362f8"},
+    {file = "equos-1.2.3-py3-none-any.whl", hash = "sha256:3ec99b89087ff00cf83d4df91eb6e33d95021d4e49ee926d72f997b7a2843ef4"},
+    {file = "equos-1.2.3.tar.gz", hash = "sha256:7b4cdf4e1acd185ea329c9486e239e0fa027421a32548b47255fd3c15964a9b4"},
 ]
 
 [package.dependencies]
@@ -2094,4 +2094,4 @@ type = ["pytest-mypy"]
 [metadata]
 lock-version = "2.1"
 python-versions = ">=3.11"
-content-hash = "3bcd61322c3f9bbc14768ad148f2d512fed65372f7febbc9bdedf4756911251f"
+content-hash = "c2fb6f50c2a9e269499e17d7be75dc5ad3876fea895f8fe9013d75007dc9ea65"

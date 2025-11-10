@@ -1,6 +1,6 @@
 "use client";
 
-import { useMemo, useState } from "react";
+import { useState } from "react";
 import { Loader2, Play } from "lucide-react";
 
 import { Button } from "@/components/ui/button";
@@ -21,12 +21,8 @@ import {
 } from "@/components/ui/select";
 import {
   AgentProvider,
-  GeminiAgentConfig,
   GeminiRealtimeModels,
   GeminiRealtimeVoices,
-  OpenaiAgentConfig,
-  OpenaiRealtimeModels,
-  OpenaiRealtimeVoices,
 } from "@equos/node-sdk/dist/types/agent.type";
 import { DEFAULT_AVATAR, DEFAULT_EQUOS_PROMPT } from "./constants";
 import { createSessionAction, stopSessionAction } from "../actions/action";
@@ -37,38 +33,13 @@ export default function Page() {
     null
   );
 
-  const modelsMap: Record<
-    AgentProvider,
-    OpenaiRealtimeModels[] | GeminiRealtimeModels[]
-  > = useMemo(
-    () => ({
-      [AgentProvider.openai]: Object.values(OpenaiRealtimeModels),
-      [AgentProvider.gemini]: Object.values(GeminiRealtimeModels),
-      [AgentProvider.elevenlabs]: [],
-    }),
-    []
-  );
-
-  const voicesMap: Record<
-    AgentProvider,
-    OpenaiRealtimeVoices[] | GeminiRealtimeVoices[]
-  > = useMemo(
-    () => ({
-      [AgentProvider.openai]: Object.values(OpenaiRealtimeVoices),
-      [AgentProvider.gemini]: Object.values(GeminiRealtimeVoices),
-      [AgentProvider.elevenlabs]: [],
-    }),
-    []
-  );
-
   const [instructions, setInstructions] = useState(DEFAULT_EQUOS_PROMPT);
-  const [provider, setProvider] = useState<AgentProvider>(AgentProvider.openai);
-  const [model, setModel] = useState<
-    OpenaiRealtimeModels | GeminiRealtimeModels
-  >(modelsMap[provider][0]);
-  const [voice, setVoice] = useState<
-    OpenaiRealtimeVoices | GeminiRealtimeVoices
-  >(voicesMap[provider][0]);
+  const [model, setModel] = useState<GeminiRealtimeModels>(
+    GeminiRealtimeModels.gemini_2_5_flash_native_audio_09_2025
+  );
+  const [voice, setVoice] = useState<GeminiRealtimeVoices>(
+    GeminiRealtimeVoices.Fenrir
+  );
 
   const [creating, setCreating] = useState(false);
 
@@ -89,12 +60,10 @@ export default function Page() {
           identity: "jeremy",
         },
         agent: {
-          provider,
-          config: {
-            instructions,
-            model,
-            voice,
-          } as OpenaiAgentConfig | GeminiAgentConfig,
+          provider: AgentProvider.gemini,
+          model,
+          voice,
+          instructions,
         },
       }).catch((e) => {
         if (e.message.includes("FREEMIUM_LIMIT")) {
@@ -128,19 +97,6 @@ export default function Page() {
     }
 
     setSession(null);
-  };
-
-  const onProviderChange = (value: AgentProvider) => {
-    setProvider(value);
-
-    setTimeout(() => {
-      setModel(
-        modelsMap[value][0] as OpenaiRealtimeModels | GeminiRealtimeModels
-      );
-      setVoice(
-        voicesMap[value][0] as OpenaiRealtimeVoices | GeminiRealtimeVoices
-      );
-    }, 50);
   };
 
   return (
@@ -178,44 +134,17 @@ export default function Page() {
             </span>
           </div>
 
-          <span className="text-sm font-bold">Provider</span>
-
-          <Select
-            onValueChange={(value) => onProviderChange(value as AgentProvider)}
-            value={provider}
-          >
-            <SelectTrigger>
-              <SelectValue placeholder="Select a provider." />
-            </SelectTrigger>
-            <SelectContent>
-              <SelectItem
-                key={AgentProvider.openai}
-                value={AgentProvider.openai}
-              >
-                OpenAI
-              </SelectItem>
-              <SelectItem
-                key={AgentProvider.gemini}
-                value={AgentProvider.gemini}
-              >
-                Gemini
-              </SelectItem>
-            </SelectContent>
-          </Select>
-
           <span className="text-sm font-bold">Model</span>
 
           <Select
-            onValueChange={(value) =>
-              setModel(value as GeminiRealtimeModels | OpenaiRealtimeModels)
-            }
+            onValueChange={(value) => setModel(value as GeminiRealtimeModels)}
             value={model}
           >
             <SelectTrigger>
               <SelectValue placeholder="Select a model." />
             </SelectTrigger>
             <SelectContent>
-              {modelsMap[provider].map((model) => (
+              {Object.values(GeminiRealtimeModels).map((model) => (
                 <SelectItem key={model} value={model}>
                   <span className="capitalize">
                     {model.split("_").join(" ")}
@@ -228,16 +157,14 @@ export default function Page() {
           <span className="text-sm font-bold">Voice</span>
 
           <Select
-            onValueChange={(value) =>
-              setVoice(value as GeminiRealtimeVoices | OpenaiRealtimeVoices)
-            }
+            onValueChange={(value) => setVoice(value as GeminiRealtimeVoices)}
             value={voice}
           >
             <SelectTrigger>
               <SelectValue placeholder="Select a voice." />
             </SelectTrigger>
             <SelectContent>
-              {voicesMap[provider].map((voice) => (
+              {Object.values(GeminiRealtimeVoices).map((voice) => (
                 <SelectItem key={voice} value={voice}>
                   <span className="capitalize">
                     {voice.split("_").join(" ")}

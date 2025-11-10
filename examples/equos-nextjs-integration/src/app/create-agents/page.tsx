@@ -20,12 +20,8 @@ import { Check, Copy, Loader2 } from "lucide-react";
 import {
   AgentProvider,
   EquosAgent,
-  GeminiAgentConfig,
   GeminiRealtimeModels,
   GeminiRealtimeVoices,
-  OpenaiAgentConfig,
-  OpenaiRealtimeModels,
-  OpenaiRealtimeVoices,
 } from "@equos/node-sdk/dist/types/agent.type";
 import {
   Select,
@@ -46,114 +42,34 @@ export default function Page() {
 
   const [copying, setCopying] = useState<Record<string, boolean>>({});
 
-  const modelsMap: Record<
-    AgentProvider,
-    OpenaiRealtimeModels[] | GeminiRealtimeModels[]
-  > = useMemo(
-    () => ({
-      [AgentProvider.openai]: Object.values(OpenaiRealtimeModels),
-      [AgentProvider.gemini]: Object.values(GeminiRealtimeModels),
-      [AgentProvider.elevenlabs]: [],
-    }),
-    []
-  );
-
-  const voicesMap: Record<
-    AgentProvider,
-    OpenaiRealtimeVoices[] | GeminiRealtimeVoices[]
-  > = useMemo(
-    () => ({
-      [AgentProvider.openai]: Object.values(OpenaiRealtimeVoices),
-      [AgentProvider.gemini]: Object.values(GeminiRealtimeVoices),
-      [AgentProvider.elevenlabs]: [],
-    }),
-    []
-  );
-
-  const [provider, setProvider] = useState<AgentProvider>(AgentProvider.openai);
-
-  const schema = z
-    .object({
-      provider: z.enum(AgentProvider),
-      name: z.string().min(3).max(100).optional(),
-      config: z.union([
-        z.object({
-          instructions: z.string().min(3).max(10000),
-          model: z.enum(OpenaiRealtimeModels),
-          voice: z.enum(OpenaiRealtimeVoices),
-        }),
-        z.object({
-          instructions: z.string().min(3).max(10000),
-          model: z.enum(GeminiRealtimeModels),
-          voice: z.enum(GeminiRealtimeVoices),
-        }),
-      ]),
-    })
-    .refine(
-      (data) => {
-        if (data.provider === AgentProvider.openai) {
-          return (
-            Object.values(OpenaiRealtimeModels).includes(
-              data.config.model as OpenaiRealtimeModels
-            ) &&
-            Object.values(OpenaiRealtimeVoices).includes(
-              data.config.voice as OpenaiRealtimeVoices
-            )
-          );
-        } else if (data.provider === AgentProvider.gemini) {
-          return (
-            Object.values(GeminiRealtimeModels).includes(
-              data.config.model as GeminiRealtimeModels
-            ) &&
-            Object.values(GeminiRealtimeVoices).includes(
-              data.config.voice as GeminiRealtimeVoices
-            )
-          );
-        }
-
-        return false;
-      },
-      { message: "Must use model and voice of the selected provider." }
-    );
+  const schema = z.object({
+    name: z.string().min(3).max(100).optional(),
+    instructions: z.string().min(3).max(10000),
+    model: z.enum(GeminiRealtimeModels),
+    voice: z.enum(GeminiRealtimeVoices),
+  });
 
   const form = useForm<z.infer<typeof schema>>({
     resolver: zodResolver(schema),
     defaultValues: {
       name: "My Agent",
-      provider: provider,
-      config: {
-        instructions: "",
-        model: modelsMap[provider][0],
-        voice: voicesMap[provider][0],
-      } as OpenaiAgentConfig | GeminiAgentConfig,
+      model: GeminiRealtimeModels.gemini_2_5_flash_native_audio_09_2025,
+      voice: GeminiRealtimeVoices.Fenrir,
+      instructions: "",
     },
   });
 
-  const onProviderChange = (value: AgentProvider) => {
-    setProvider(value);
-    form.setValue("provider", value);
-
-    setTimeout(() => {
-      form.setValue(
-        "config.model",
-        modelsMap[value][0] as OpenaiRealtimeModels | GeminiRealtimeModels
-      );
-      form.setValue(
-        "config.voice",
-        voicesMap[value][0] as OpenaiRealtimeVoices | GeminiRealtimeVoices
-      );
-    }, 50);
-  };
-
   const onSubmit = async (data: z.infer<typeof schema>) => {
     if (!isCreating) {
-      const { name, provider, config } = data;
+      const { name, model, instructions, voice } = data;
       setIsCreating(true);
       const res = await createAgentAction({
         client: "example-client",
         name,
-        provider,
-        config,
+        provider: AgentProvider.gemini,
+        model,
+        voice,
+        instructions,
       }).catch(() => null);
 
       if (res) {
@@ -179,8 +95,9 @@ export default function Page() {
               {createdAgent.name}
             </span>
             <span className="text-md text-muted-foreground">
-              {createdAgent.provider}
-              <code>{JSON.stringify(createdAgent.config)}</code>
+              <code>
+                {createdAgent.model} - {createdAgent.voice}
+              </code>
             </span>
 
             <div className="mt-4">
@@ -213,39 +130,7 @@ export default function Page() {
           <div className="grid gap-4">
             <FormField
               control={form.control}
-              name="provider"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel className="font-bold">Realtime Provider</FormLabel>
-                  <Select onValueChange={onProviderChange} value={field.value}>
-                    <FormControl>
-                      <SelectTrigger>
-                        <SelectValue placeholder="Select an agent provider." />
-                      </SelectTrigger>
-                    </FormControl>
-                    <SelectContent>
-                      <SelectItem
-                        key={AgentProvider.openai}
-                        value={AgentProvider.openai}
-                      >
-                        OpenAI
-                      </SelectItem>
-                      <SelectItem
-                        key={AgentProvider.gemini}
-                        value={AgentProvider.gemini}
-                      >
-                        Gemini
-                      </SelectItem>
-                    </SelectContent>
-                  </Select>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-
-            <FormField
-              control={form.control}
-              name="config.model"
+              name="model"
               render={({ field }) => (
                 <FormItem>
                   <FormLabel className="font-bold">Model</FormLabel>
@@ -256,7 +141,7 @@ export default function Page() {
                       </SelectTrigger>
                     </FormControl>
                     <SelectContent>
-                      {modelsMap[form.getValues().provider].map((model) => (
+                      {Object.values(GeminiRealtimeModels).map((model) => (
                         <SelectItem key={model} value={model}>
                           <span className="capitalize">
                             {model.split("_").join(" ")}
@@ -272,7 +157,7 @@ export default function Page() {
 
             <FormField
               control={form.control}
-              name="config.voice"
+              name="voice"
               render={({ field }) => (
                 <FormItem>
                   <FormLabel className="font-bold">Voice</FormLabel>
@@ -283,7 +168,7 @@ export default function Page() {
                       </SelectTrigger>
                     </FormControl>
                     <SelectContent>
-                      {voicesMap[form.getValues().provider].map((voice) => (
+                      {Object.values(GeminiRealtimeVoices).map((voice) => (
                         <SelectItem key={voice} value={voice}>
                           <span className="capitalize">
                             {voice.split("_").join(" ")}
@@ -299,7 +184,7 @@ export default function Page() {
 
             <FormField
               control={form.control}
-              name="config.instructions"
+              name="instructions"
               render={({ field }) => (
                 <div className="grid gap-2">
                   <FormLabel className="font-bold">Instructions</FormLabel>
