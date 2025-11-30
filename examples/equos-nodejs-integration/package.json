@@ -18,7 +18,7 @@
     "typescript": "^5.9.2"
   },
   "dependencies": {
-    "@equos/node-sdk": "^2.1.2",
+    "@equos/node-sdk": "^2.2.3",
     "dotenv": "^17.2.2"
   }
 }

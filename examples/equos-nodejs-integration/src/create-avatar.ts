@@ -11,6 +11,7 @@ export const createAvatar = async () => {
   const avatar: EquosAvatar = await client.avatars.create({
     name: "Jeremy",
     identity: "equos-avatar-jeremy",
+    client: "my-client-id",
     refImage: DEFAULT_AVATAR,
   });
 
