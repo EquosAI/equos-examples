@@ -1,41 +1,73 @@
 "use client";
 
-import { EquosBrowserEvent, initEquosBrowser } from "@equos/browser-sdk";
+import {
+  EquosBrowserEvent,
+  EquosLocale,
+  initEquosBrowser,
+} from "@equos/browser-sdk";
 import {
   EquosBubbleTrigger,
   EquosPlaceholderTrigger,
   EquosPopup,
 } from "@equos/browser-sdk/react";
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useRef } from "react";
 
 import "@equos/browser-sdk/styles.css";
-import { ArrowDown, ArrowLeft, ArrowRight, ArrowUp } from "lucide-react";
-import { EQUOS_AGENT_ID, EQUOS_AVATAR_ID, EQUOS_PUBLIC_KEY } from "./env";
-import { Switch } from "./components/ui/switch";
-import { Slider } from "./components/ui/slider";
-import { Button } from "./components/ui/button";
+import logo from "./logo.svg";
 
 export default function App() {
-  const agent = useRef({
-    agentId: EQUOS_AGENT_ID,
-    avatarId: EQUOS_AVATAR_ID,
-    name: "Jeremy",
-    description: "Equos Agent demonstrating react integration...",
+  document.documentElement.classList.add("dark");
+
+  const agent_callum = useRef({
+    agentId: "cmk568wdn00doh30j9aw6sv4c",
+    avatarId: "cmgrwit4o0007ew0j8886xvha",
+    name: "Callum",
+    description: "Equos Video Game Character",
     thumbnailUrl:
-      "https://equos-media.s3.fr-par.scw.cloud/organizations/cmfh01k1t0000sc0j0a12ykxs/avatars/avatar-RoucuF.png",
-    maxDuration: 120,
+      "https://equos-media.s3.fr-par.scw.cloud/organizations/cmgrvy8nm0015vx0jhpp0533q/avatars/avatar-jcb2hs.png",
+    maxDuration: 300,
     allowAudio: true,
   });
-  const equos = useRef(initEquosBrowser(EQUOS_PUBLIC_KEY));
+  const agent_harper = useRef({
+    agentId: "cmk565afa00cphm0j6iu9kq5c",
+    avatarId: "cmgrwjd7f0009fa0jtnlu690o",
+    name: "Harper",
+    description: "Equos Sales Agent",
+    thumbnailUrl:
+      "https://equos-media.s3.fr-par.scw.cloud/organizations/cmgrvy8nm0015vx0jhpp0533q/avatars/avatar-zC1WV6.png",
+    maxDuration: 300,
+    allowAudio: true,
+  });
+  const agent_alexis = useRef({
+    agentId: "cmk562m2200fdi90jed6got8w",
+    avatarId: "cmgrwk0uk0007i00j600k52rr",
+    name: "Alexis",
+    description: "Equos Support Agent",
+    thumbnailUrl:
+      "https://equos-media.s3.fr-par.scw.cloud/organizations/cmgrvy8nm0015vx0jhpp0533q/avatars/avatar-MR5APr.png",
+    maxDuration: 300,
+    allowAudio: true,
+  });
+  const agent_joe = useRef({
+    agentId: "cmk5674q800cthm0jmrlpfwe1",
+    avatarId: "cmgrwkgdq000li20jgudphcaw",
+    name: "Joe",
+    description: "Equos Mindfulness Coach",
+    thumbnailUrl:
+      "https://equos-media.s3.fr-par.scw.cloud/organizations/cmgrvy8nm0015vx0jhpp0533q/avatars/avatar-FrCMJf.png",
+    maxDuration: 300,
+    allowAudio: true,
+  });
+  const equos = useRef(initEquosBrowser("pk_F7eTyD1h1i5xPn02utVSJY8zKzII5JZ"));
 
-  const [dark, setDark] = useState(false);
-  const [modal, setModal] = useState(true);
-  const [ghost, setGhost] = useState(false);
+  equos.current.setPreferredLanguage(EquosLocale.EN);
 
-  const [alignX, setAlignX] = useState<"left" | "right">("right");
-  const [alignY, setAlignY] = useState<"top" | "bottom">("bottom");
-
-  const [windowSize, setWindowSize] = useState<number>(512);
+  const dark = false;
+  const modal = true;
+  const ghost = false;
+  const alignX: "left" | "right" = "right";
+  const alignY: "top" | "bottom" = "bottom";
+  const windowSize = 512;
 
   useEffect(() => {
     const onSessionStarted = (e: Event) => {
@@ -62,111 +94,90 @@ export default function App() {
     };
   }, []);
 
-  const onStartProgrammatically = () => {
-    console.log(equos.current.triggers.keys().next().value);
-    console.log(
-      equos.current.start(equos.current.triggers.keys().next().value!)
-    );
-  };
-
   return (
-    <div className="w-screen h-screen flex flex-col items-center justify-center gap-2">
-      <h1 className="text-2xl font-bold">Avatar Sessions</h1>
-      <p className="text-muted-foreground mb-4">
-        This page uses Equos react components to run sessions in react
-        applications.
-      </p>
+    <div className="flex flex-col items-center gap-8">
+      <div className="flex justify-between items-center w-full py-2 px-8 border-b border-0.5">
+        <img src={logo} alt="Logo" className="h-6" />
+        <button className="bg-primary text-black px-2 py-1 rounded-full text-sm">
+          Try our platform
+        </button>
+      </div>
+      <div className="flex flex-col gap-4">
+        <h1 className="md:text-6xl text-4xl font-bold text-center">
+          The Fastest Way to <br /> Bring Real-Time AI Avatars <br /> into Your
+          Product
+        </h1>
+        <p className="text-muted-foreground md:text-lg text-sm text-center">
+          From a single photo to an audio-driven lifelike digital human, <br />{" "}
+          ready to interact with your users — in real time.
+        </p>
+      </div>
 
-      <div className="flex items-start gap-8 min-h-[512px]">
-        <div className="flex-1">
-          <div style={{ height: windowSize, width: windowSize }}>
+      <div className="flex md:flex-row flex-col gap-8 mb-12 items-center">
+        <div className="flex flex-col gap-4 items-center">
+          <div style={{ height: 300, width: 300 }}>
             <EquosPlaceholderTrigger
-              agent={agent.current}
+              agent={agent_harper.current}
               dark={dark}
               modal={modal}
               ghost={ghost}
               windowSizeInPixels={windowSize}
             />
           </div>
-        </div>
-        <div className="flex flex-col flex-1 w-full max-w-3xl mx-auto gap-4">
-          <h2 className="text-2xl font-bold">Params</h2>
-          <div className="flex w-full">
-            <div className="flex flex-col w-full">
-              <span className="font-bold">Window Size {windowSize}px.</span>
-              <Slider
-                defaultValue={[512]}
-                max={512}
-                min={256}
-                step={1}
-                onValueChange={(value) => setWindowSize(value[0])}
-              />
-            </div>
-          </div>
-          <div className="flex items-center mt-8 justify-around gap-4">
-            <div className="flex items-center space-x-2">
-              <Switch
-                id="modal"
-                checked={modal}
-                onCheckedChange={(checked) => setModal(checked)}
-              />
-              <label htmlFor="modal">Launch Session in modal</label>
-            </div>
-            <div className="flex items-center space-x-2">
-              <Switch
-                id="dark"
-                checked={dark}
-                onCheckedChange={(dark) => setDark(dark)}
-              />
-              <label htmlFor="dark">Dark Mode</label>
-            </div>
-            <div className="flex items-center space-x-2">
-              <Switch
-                id="ghost"
-                checked={ghost}
-                onCheckedChange={(ghost) => setGhost(ghost)}
-              />
-              <label htmlFor="ghost">
-                Ghost Mode (No component, launch sessions programmatically)
-              </label>
-            </div>
-          </div>
-
-          <span className="font-bold">Change bubble position</span>
-          <div className="flex flex-col items-center mt-8 center gap-4">
-            <Button onClick={() => setAlignY("top")}>
-              <ArrowUp />
-            </Button>
-
-            <div className="flex gap-16">
-              <Button onClick={() => setAlignX("left")}>
-                <ArrowLeft />
-              </Button>
-              <Button onClick={() => setAlignX("right")}>
-                <ArrowRight />
-              </Button>
-            </div>
-
-            <Button onClick={() => setAlignY("bottom")}>
-              <ArrowDown />
-            </Button>
+          <div className="flex flex-col w-[300px]">
+            <h2 className="text-md font-bold">Sales Agent</h2>
+            <p className="text-muted-foreground text-xs">
+              Harper is a dynamic, upbeat sales consultant who passionately
+              showcases Equos’ AI avatar solutions, turning complex tech into
+              clear business value with charm and strategic insight.
+            </p>
           </div>
         </div>
-
-        <div className="flex mt-8">
-          {ghost && (
-            <Button onClick={onStartProgrammatically}>
-              Start Ghost session
-            </Button>
-          )}
+        <div className="flex flex-col gap-4 items-center">
+          <div style={{ height: 300, width: 300 }}>
+            <EquosPlaceholderTrigger
+              agent={agent_callum.current}
+              dark={dark}
+              modal={modal}
+              ghost={ghost}
+              windowSizeInPixels={windowSize}
+            />
+          </div>
+          <div className="flex flex-col w-[300px]">
+            <h2 className="text-md font-bold">Video Game Character</h2>
+            <p className="text-muted-foreground text-xs">
+              Callum is a witty and eccentric wizard from Quos who guides
+              adventurers on their quest for the eight legendary gemstones with
+              dramatic flair and magical wisdom.
+            </p>
+          </div>
+        </div>
+        <div className="flex flex-col gap-4 items-center">
+          <div style={{ height: 300, width: 300 }}>
+            <EquosPlaceholderTrigger
+              agent={agent_joe.current}
+              dark={dark}
+              modal={modal}
+              ghost={ghost}
+              windowSizeInPixels={windowSize}
+            />
+          </div>
+          <div className="flex flex-col w-[300px]">
+            <h2 className="text-md font-bold">Mindfulness Coach</h2>
+            <p className="text-muted-foreground text-xs">
+              Joe is a gentle and intuitive mindfulness coach who helps people
+              find calm, balance, and emotional clarity through compassionate,
+              personalized guidance and mindful awareness.
+            </p>
+          </div>
         </div>
       </div>
 
       <EquosPopup alignX={alignX} alignY={alignY}>
         <EquosBubbleTrigger
           dark={dark}
-          windowSizeInPixels={windowSize}
-          agent={agent.current}
+          windowSizeInPixels={300}
+          agent={agent_alexis.current}
         ></EquosBubbleTrigger>
       </EquosPopup>
     </div>
