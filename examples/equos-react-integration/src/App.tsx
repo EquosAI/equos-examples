@@ -125,7 +125,7 @@ export default function App() {
             />
           </div>
           <div className="flex flex-col w-[300px]">
-            <h2 className="text-md font-bold">Sales Agent</h2>
+            <h2 className="text-md font-bold">Sales Tutor</h2>
             <p className="text-muted-foreground text-xs">
               Harper is a dynamic, upbeat sales consultant who passionately
               showcases Equos’ AI avatar solutions, turning complex tech into
@@ -163,7 +163,7 @@ export default function App() {
             />
           </div>
           <div className="flex flex-col w-[300px]">
-            <h2 className="text-md font-bold">Mindfulness Coach</h2>
+            <h2 className="text-md font-bold">English Coach</h2>
             <p className="text-muted-foreground text-xs">
               Joe is a gentle and intuitive mindfulness coach who helps people
               find calm, balance, and emotional clarity through compassionate,
