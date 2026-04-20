@@ -1,12 +1,20 @@
 import type { CreateEquosConversationResponse } from "@equos/node-sdk";
-import { EquosConversationRenderer } from "@equos/react";
+import { EquosMode, type EquosModeType } from "@equos/browser-sdk";
+import {
+  EquosConversationProvider,
+  EquosConversationRenderer,
+  useEquosConversation,
+} from "@equos/react";
 import { useCallback, useState } from "react";
+
+const MODES: EquosModeType[] = [EquosMode.Text, EquosMode.Audio, EquosMode.Video];
 
 export default function App() {
   const [response, setResponse] =
     useState<CreateEquosConversationResponse | null>(null);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [mode, setMode] = useState<EquosModeType>(EquosMode.Video);
 
   const start = useCallback(async () => {
     setLoading(true);
@@ -26,21 +34,28 @@ export default function App() {
 
   const stop = useCallback(() => setResponse(null), []);
 
-  if (response) {
+  if (response?.consumerAccessToken) {
     return (
-      <div className="w-screen h-screen flex items-center justify-center">
-        <div className="max-w-[1080px] aspect-video w-full rounded-xl overflow-hidden">
-          <EquosConversationRenderer
-            conversation={response.conversation}
-            accessToken={response.consumerAccessToken}
-            allowMic
-            allowCamera
-            allowScreenshare
-            allowHangUp
-            onHangUp={stop}
-          />
+      <EquosConversationProvider
+        conversation={response.conversation}
+        accessToken={response.consumerAccessToken}
+        autoPublishMic
+        mode={mode}
+      >
+        <div className="fixed inset-0 flex items-center justify-center">
+          <div className="max-w-[1080px] aspect-video w-full rounded-xl overflow-hidden">
+            <EquosConversationRenderer
+              allowMic
+              allowCamera
+              allowScreenshare
+              allowHangUp
+              onHangUp={stop}
+            />
+          </div>
         </div>
-      </div>
+        <ModeSelector mode={mode} onChange={setMode} />
+        <ConversationControls />
+      </EquosConversationProvider>
     );
   }
 
@@ -59,5 +74,88 @@ export default function App() {
       </button>
       {error && <p className="text-red-400">{error}</p>}
     </main>
+  );
+}
+
+function ModeSelector({
+  mode,
+  onChange,
+}: {
+  mode: EquosModeType;
+  onChange: (mode: EquosModeType) => void;
+}) {
+  return (
+    <div className="fixed top-4 right-4 z-[60] flex gap-2 rounded-lg bg-neutral-900/80 p-2 shadow-lg backdrop-blur">
+      {MODES.map((m) => (
+        <button
+          key={m}
+          onClick={() => onChange(m)}
+          className={`rounded px-3 py-1 text-sm capitalize transition ${
+            mode === m
+              ? "bg-blue-500 text-white"
+              : "bg-neutral-800 text-neutral-300 hover:bg-neutral-700"
+          }`}
+        >
+          {m}
+        </button>
+      ))}
+    </div>
+  );
+}
+
+function ConversationControls() {
+  const { sendText, sendContext } = useEquosConversation();
+  const [textValue, setTextValue] = useState("");
+  const [contextValue, setContextValue] = useState("");
+
+  const onSendText = () => {
+    const trimmed = textValue.trim();
+    if (!trimmed) return;
+    sendText(trimmed);
+    setTextValue("");
+  };
+
+  const onSendContext = () => {
+    const trimmed = contextValue.trim();
+    if (!trimmed) return;
+    sendContext(trimmed);
+    setContextValue("");
+  };
+
+  return (
+    <div className="fixed top-4 left-4 z-[60] flex w-80 flex-col gap-2 rounded-lg bg-neutral-900/80 p-3 shadow-lg backdrop-blur">
+      <div className="flex gap-2">
+        <input
+          type="text"
+          value={textValue}
+          onChange={(e) => setTextValue(e.target.value)}
+          onKeyDown={(e) => e.key === "Enter" && onSendText()}
+          placeholder="Send a message…"
+          className="flex-1 rounded border border-neutral-700 bg-neutral-800 px-2 py-1 text-sm text-white placeholder:text-neutral-500"
+        />
+        <button
+          onClick={onSendText}
+          className="rounded bg-blue-500 px-3 py-1 text-sm text-white hover:bg-blue-600"
+        >
+          Send
+        </button>
+      </div>
+      <div className="flex gap-2">
+        <input
+          type="text"
+          value={contextValue}
+          onChange={(e) => setContextValue(e.target.value)}
+          onKeyDown={(e) => e.key === "Enter" && onSendContext()}
+          placeholder="Inject context…"
+          className="flex-1 rounded border border-neutral-700 bg-neutral-800 px-2 py-1 text-sm text-white placeholder:text-neutral-500"
+        />
+        <button
+          onClick={onSendContext}
+          className="rounded bg-purple-500 px-3 py-1 text-sm text-white hover:bg-purple-600"
+        >
+          Inject
+        </button>
+      </div>
+    </div>
   );
 }
