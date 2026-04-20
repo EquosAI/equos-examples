@@ -2,21 +2,49 @@
 <html lang="en">
   <head>
     <meta charset="UTF-8" />
-    <link rel="icon" type="image/svg+xml" href="/vite.svg" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Equos Vanilla Integration</title>
     <link rel="stylesheet" href="/src/index.css" />
   </head>
   <body>
-    <h1>Equos Vanilla Integration</h1>
+    <main>
+      <h1>Equos Vanilla Integration</h1>
 
-    <div class="equos equos-popup">
-      <equos-bubble-list></equos-bubble-list>
-    </div>
+      <div class="stage">
+        <video id="character-video" autoplay playsinline></video>
+      </div>
 
-    <div class="placeholder-container">
-      <equos-placeholder-trigger modal="false" ghost="false" dark="false"/>
-    </div>
+      <div class="controls">
+        <button id="connect">Start conversation</button>
+        <button id="disconnect" disabled>Hang up</button>
+        <button id="mic" disabled>Mic: OFF</button>
+      </div>
+
+      <div class="controls">
+        <span class="controls-label">Mode</span>
+        <button id="mode-text" disabled>Text</button>
+        <button id="mode-audio" disabled>Audio</button>
+        <button id="mode-video" class="active" disabled>Video</button>
+      </div>
+
+      <form id="text-form" class="text-form">
+        <input id="text-input" type="text" placeholder="Send a message…" disabled />
+        <button type="submit" disabled>Send</button>
+      </form>
+
+      <form id="context-form" class="text-form">
+        <input
+          id="context-input"
+          type="text"
+          placeholder="Inject context into the agent's prompt…"
+          disabled
+        />
+        <button type="submit" disabled>Inject</button>
+      </form>
+
+      <div id="transcript" class="transcript"></div>
+    </main>
+
     <script type="module" src="/src/main.ts"></script>
   </body>
 </html>
