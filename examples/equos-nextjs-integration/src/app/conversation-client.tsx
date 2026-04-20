@@ -1,30 +1,38 @@
-import type { CreateEquosConversationResponse } from "@equos/node-sdk";
-import { EquosConversationRenderer } from "@equos/react";
-import { useCallback, useState } from "react";
+"use client";
 
-export default function App() {
+import { EquosConversationRenderer } from "@equos/react";
+import type { CreateEquosConversationResponse } from "@equos/node-sdk";
+import { useCallback, useState, useTransition } from "react";
+
+import { startConversationAction, stopConversationAction } from "./actions";
+
+export function ConversationClient() {
   const [response, setResponse] =
     useState<CreateEquosConversationResponse | null>(null);
-  const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [pending, startTransition] = useTransition();
 
-  const start = useCallback(async () => {
-    setLoading(true);
+  const start = useCallback(() => {
     setError(null);
-    try {
-      const res = await fetch("/api/start-conversation", { method: "POST" });
-      const payload = await res.json();
-      if (!res.ok)
-        throw new Error(payload.error ?? "Failed to start conversation");
-      setResponse(payload);
-    } catch (err) {
-      setError((err as Error).message);
-    } finally {
-      setLoading(false);
-    }
+    startTransition(async () => {
+      try {
+        setResponse(await startConversationAction());
+      } catch (err) {
+        setError((err as Error).message);
+      }
+    });
   }, []);
 
-  const stop = useCallback(() => setResponse(null), []);
+  const stop = useCallback(async () => {
+    if (!response) return;
+    const id = response.conversation.id;
+    setResponse(null);
+    try {
+      await stopConversationAction(id);
+    } catch (err) {
+      console.error("Failed to stop conversation:", err);
+    }
+  }, [response]);
 
   if (response) {
     return (
@@ -45,19 +53,19 @@ export default function App() {
   }
 
   return (
-    <main className="flex min-h-screen flex-col items-center justify-center gap-4 p-6 text-center">
-      <h1 className="text-3xl font-semibold">Equos React Integration</h1>
+    <div className="flex min-h-screen flex-col items-center justify-center gap-4 p-6 text-center">
+      <h1 className="text-3xl font-semibold">Equos Next.js Integration</h1>
       <p className="text-neutral-400">
         Start a conversation with your Equos character.
       </p>
       <button
         onClick={start}
-        disabled={loading}
+        disabled={pending}
         className="rounded-lg bg-blue-500 px-5 py-3 font-medium text-white transition hover:bg-blue-600 disabled:cursor-not-allowed disabled:opacity-60"
       >
-        {loading ? "Starting…" : "Start conversation"}
+        {pending ? "Starting…" : "Start conversation"}
       </button>
       {error && <p className="text-red-400">{error}</p>}
-    </main>
+    </div>
   );
 }

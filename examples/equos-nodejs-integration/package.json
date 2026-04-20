@@ -1,24 +1,28 @@
 {
-  "name": "nodejs",
+  "name": "equos-nodejs-integration",
   "version": "1.0.0",
-  "description": "",
-  "main": "index.js",
+  "description": "Equos Node SDK examples.",
+  "type": "module",
   "scripts": {
     "build": "tsc",
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "create:brain": "tsx src/create-brain.ts",
+    "create:face": "tsx src/create-face.ts",
+    "create:voice": "tsx src/create-voice.ts",
+    "create:character": "tsx src/create-character.ts",
+    "list:brains": "tsx src/list-brains.ts",
+    "list:faces": "tsx src/list-faces.ts",
+    "list:voices": "tsx src/list-voices.ts",
+    "list:characters": "tsx src/list-characters.ts",
+    "run:conversation": "tsx src/run-conversation.ts"
   },
-  "keywords": [],
-  "author": "",
   "license": "ISC",
-  "type": "module",
   "devDependencies": {
     "@types/node": "^24.4.0",
-    "nodemon": "^3.1.10",
-    "ts-node": "^10.9.2",
+    "tsx": "^4.19.2",
     "typescript": "^5.9.2"
   },
   "dependencies": {
-    "@equos/node-sdk": "^2.2.3",
+    "@equos/node-sdk": "^3.1.2",
     "dotenv": "^17.2.2"
   }
 }
