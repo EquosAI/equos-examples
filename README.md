@@ -24,7 +24,7 @@ Example apps integrating the official [Equos.ai](https://equos.ai) SDKs.
 ## Links
 
 - Documentation: [docs.equos.ai](https://docs.equos.ai)
-- API reference: [api.equos.ai/docs/v1](https://api.equos.ai/docs/v1)
+- API reference: [api.equos.ai/docs/v3](https://api.equos.ai/docs/v3)
 - Studio: [studio.equos.ai](https://studio.equos.ai)
 - Slack community: [Join](https://join.slack.com/t/equosaicommunity/shared_invite/zt-3d8oy19au-jZpsJB0i~gdL0jbDswdzzQ)
 
