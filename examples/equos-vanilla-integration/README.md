@@ -2,13 +2,11 @@
 
 Minimal integration of the [Equos Browser SDK](https://www.npmjs.com/package/@equos/browser-sdk) in a vanilla HTML / TypeScript app — no framework required. The same pattern works with Angular, Vue, Svelte, etc.
 
-![Equos Vanilla Integration Preview](./public/preview.png)
-
 ## What's inside
 
-- [`src/main.ts`](./src/main.ts) — wires buttons to an `EquosConversation` instance, attaches the agent's video, listens for utterances and connection events.
+- [`src/main.ts`](./src/main.ts) — wires the UI to an `EquosConversation` instance: attaches the agent's video, toggles the microphone, sends text, injects context, switches modes, and renders utterances + connection / mode / error events into the transcript.
 - [`vite.config.ts`](./vite.config.ts) — a Vite plugin that exposes `POST /api/start-conversation`. It uses [`@equos/node-sdk`](https://www.npmjs.com/package/@equos/node-sdk) to mint a conversation server-side so your API key never reaches the browser.
-- [`index.html`](./index.html) — the demo page: a video stage, start/hang-up/mic buttons, a text input, and a transcript panel.
+- [`index.html`](./index.html) — the demo page: a video stage, start/hang-up/mic controls, a Text/Audio/Video mode switcher, a message input, a context-injection input, and a transcript panel.
 
 ## Prerequisites
 
@@ -42,10 +40,12 @@ npm run dev
 ### Using the demo
 
 1. Click **Start conversation**. The frontend posts to `/api/start-conversation`; the Vite middleware calls `client.conversations.startConversation(...)` and returns `{ conversation, consumerAccessToken }`.
-2. `main.ts` constructs `new EquosConversation({ config: { wsUrl, token, agentIdentity } })`, wires up events, and calls `connect()`. The character's video is attached to the `<video>` tag.
-3. Turn **Mic ON** to talk to the character, or type in the text input and press **Send** to drive the conversation via text.
-4. Every utterance (yours and the agent's) streams into the transcript panel.
-5. Click **Hang up** to `disconnect()` and detach the media.
+2. `main.ts` constructs `new EquosConversation({ config: { wsUrl, token, agentIdentity } })`, wires up events (`AgentConnected`, `AgentDisconnected`, `Utterance`, `ModeChanged`, `Error`), and calls `connect()`. The character's video is attached to the `<video>` tag on `AgentConnected`.
+3. Turn **Mic ON** to talk to the character, or type in the message input and press **Send** to drive the conversation via text.
+4. Use the **Text / Audio / Video** buttons to switch the agent's mode at runtime via `conversation.setMode(...)`. The active button reflects the latest `ModeChanged` event.
+5. Use the **Inject** input to push extra context into the agent's prompt with `conversation.sendContext(...)` — useful for feeding it page state, user info, or any side-channel signal mid-conversation.
+6. Every utterance (yours and the agent's) streams into the transcript panel.
+7. Click **Hang up** to `disconnect()` and detach the media.
 
 ### Build for production
 
